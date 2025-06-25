@@ -2,7 +2,7 @@
   "name": "blackberry-m-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dis/index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",

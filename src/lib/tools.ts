@@ -1,5 +1,5 @@
 import { tool } from "@langchain/core/tools";
-import { mongoClient, vectorStore } from "../config/db";
+import { mongoClient, vectorStore } from "../config/db.js";
 import { optional, z } from "zod";
 
 const retriever = tool(

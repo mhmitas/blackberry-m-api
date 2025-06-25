@@ -9,8 +9,8 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { MongoDBSaver } from "@langchain/langgraph-checkpoint-mongodb";
 import { MongoClient } from "mongodb";
 import "dotenv/config";
-import { tools } from "./tools";
-import { model } from "./llm";
+import { tools } from "./tools.js";
+import { model } from "./llm.js";
 
 export async function callAgent(
   client: MongoClient,

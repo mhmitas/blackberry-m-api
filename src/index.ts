@@ -1,8 +1,7 @@
 import "dotenv/config";
 import express, { Express, Request, Response } from "express";
-import { callAgent } from "./lib/agent";
-import { mongoClient } from "./config/db";
 import { callNewAgent } from "./lib/new-agent.mjs";
+import { mongoClient } from "config/db.js";
 const app: Express = express();
 app.use(express.json());
 
