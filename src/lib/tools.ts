@@ -33,7 +33,7 @@ const getAbout = tool(
   {
     name: "get_about",
     description:
-      "Get primary information about the organization. This is for you (the assistant), not for the users—you will learn from here",
+      "Get primary information about the organization. It will tell you what information you have access. This is for you (the assistant), not for the users—you will learn from here",
     schema: z.object({}),
   }
 );

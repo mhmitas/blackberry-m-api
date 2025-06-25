@@ -1,5 +1,11 @@
 import { Annotation } from "@langchain/langgraph";
-import { AIMessage, BaseMessage, HumanMessage } from "@langchain/core/messages";
+import {
+  AIMessage,
+  BaseMessage,
+  HumanMessage,
+  isAIMessage,
+  isHumanMessage,
+} from "@langchain/core/messages";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import "dotenv/config";
 import { StateGraph } from "@langchain/langgraph";
@@ -27,7 +33,7 @@ export async function callNewAgent(
     const toolNode = new ToolNode<typeof GraphState.State>(tools);
 
     const llm = new ChatMistralAI({
-      model: "mistral-medium-latest",
+      model: "mistral-large-latest",
       temperature: 0,
     }).bindTools(tools);
 
@@ -77,7 +83,8 @@ export async function callNewAgent(
       },
       { recursionLimit: 15, configurable: { thread_id: thread_id } }
     );
-    return finalState.messages[finalState.messages.length - 1].content;
+
+    return finalState.messages[finalState.messages.length - 1];
   } catch (error) {
     throw error;
   }
@@ -92,7 +99,7 @@ Role and Identity:
 
 Behavioral Guidelines:
 - Think step-by-step before responding. Break queries into logical steps.
-- Start with primary information about the organization to understand your workplace.
+- Start with getAbout tool to understand your workplace.
 - If a user asks something outside your knowledge or context, do not fabricate information. Politely inform them you don’t have that info.
 - Keep responses short, clear, and focused.
 - Use customer-centered language. If relevant, provide contact info or next steps.
