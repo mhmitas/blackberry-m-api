@@ -11,7 +11,7 @@ app.use(express.json());
 // Allow CORS for localhost:3000
 app.use(
   cors({
-    origin: ["http://localhost:3000", "*"],
+    origin: ["http://localhost:3000", "https://blackberry-mountain.vercel.app"],
   })
 );
 
