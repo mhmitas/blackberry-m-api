@@ -14,5 +14,8 @@
     "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
+  "skipLibCheck": true,
+  "noImplicitThis": false,
+  "strictBindCallApply": false
 }

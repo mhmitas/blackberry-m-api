@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
 import { MongoClient } from "mongodb";
-import { embeddingModel } from "../lib/llm.js";
+import { embeddingModel } from "./llm.js";
 
 const client = new MongoClient(process.env.MONGO_URI || "");
 const collection = client.db("blackberry_mountain").collection("embeddings");
