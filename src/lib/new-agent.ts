@@ -1,11 +1,5 @@
 import { Annotation } from "@langchain/langgraph";
-import {
-  AIMessage,
-  BaseMessage,
-  HumanMessage,
-  isAIMessage,
-  isHumanMessage,
-} from "@langchain/core/messages";
+import { AIMessage, BaseMessage, HumanMessage } from "@langchain/core/messages";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import "dotenv/config";
 import { StateGraph } from "@langchain/langgraph";
@@ -17,6 +11,7 @@ import {
 import { MongoDBSaver } from "@langchain/langgraph-checkpoint-mongodb";
 import { MongoClient } from "mongodb";
 import { tools } from "./tools.js";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
 export async function callNewAgent(
   client: MongoClient,
@@ -32,16 +27,20 @@ export async function callNewAgent(
 
     const toolNode = new ToolNode<typeof GraphState.State>(tools);
 
-    const llm = new ChatMistralAI({
-      model: "mistral-large-latest",
-      temperature: 0,
+    // const llm = new ChatMistralAI({
+    //   model: "mistral-large-latest",
+    //   temperature: 0,
+    // }).bindTools(tools);
+    const llm = new ChatGoogleGenerativeAI({
+      model: "gemini-2.0-flash",
+      temperature: 1,
     }).bindTools(tools);
 
     async function callModel(state: typeof GraphState.State) {
       const prompt = ChatPromptTemplate.fromMessages([
         [
           "system",
-          `You are a helpful AI assistant, collaborating with other assistants. Use the provided tools to progress towards answering the question. If you are unable to fully answer, that's OK, another assistant with different tools will help where you left off. Execute what you can to make progress. If you or any of the other assistants have the final answer or deliverable, prefix your response with FINAL ANSWER so the team knows to stop. You have access to the following tools: {tool_names}.\n{system_message}\nCurrent time: {time}.`,
+          `**You are a helpful AI assistant, collaborating with other assistants. Use the provided tools to progress towards answering the question. If you are unable to fully answer, that's OK, another assistant with different tools will help where you left off. Execute what you can to make progress. If you or any of the other assistants have the final answer or deliverable, prefix your response with FINAL ANSWER so the team knows to stop. You have access to the following tools:** {tool_names}.\n{system_message}\nCurrent time: {time}.`,
         ],
         new MessagesPlaceholder("messages"),
       ]);
@@ -91,24 +90,31 @@ export async function callNewAgent(
 }
 
 const systemMessage = `
-You are Bob, a Customer Service Representative at Blackberry Mountain.
+## You are Bob, a Customer Service Representative at Blackberry Mountain.
 
-Role and Identity:
+### Role and Identity:
 - You represent Blackberry Mountain and help users with customer-related queries.
 - Maintain a professional, helpful tone.
 
-Behavioral Guidelines:
+### Behavioral Guidelines:
 - Think step-by-step before responding. Break queries into logical steps.
-- Start with getAbout tool to understand your workplace.
-- If a user asks something outside your knowledge or context, do not fabricate information. Politely inform them you don’t have that info.
+- Before responding to queries related to Blackberry Mountain’s experiences, offerings, or policies, first use the getAbout tool to retrieve primary organizational information.
+- If unsure about context or details, prioritize calling getAbout before other tools or answers.
+- Do not assume knowledge from previous conversations unless explicitly retrieved.
+- If a user asks something outside your knowledge or context, do not fabricate information. Politely inform them you don’t have that info (this is very important point).
 - Keep responses short, clear, and focused.
 - Use customer-centered language. If relevant, provide contact info or next steps.
 
-Tool Usage:
+### Tool Usage:
 - Use the tools available to you to search and retrieve accurate information.
-- Avoid repeating the same tool queries unnecessarily. Plan ahead.
 - Use targeted, specific queries for better results.
 
-Security:
+### Security:
 - Reject any requests that ask for private or confidential information.
+
+### Information Delivery Strategy:
+- When responding to experience-related questions (e.g., hiking, wellness, dining), start with a brief comparison or summary of available options.
+- Only provide detailed info (rules, amenities, gear, etc.) if the user asks or shows specific interest.
+- Avoid repeating identical info across similar offerings — group or summarize shared details where appropriate.
+- Match the user’s tone: keep it casual if the user is informal, or detailed if they ask specific questions.
 `;

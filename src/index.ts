@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express, { Express, Request, Response } from "express";
-import cors from "cors"; // <-- Add this import
+import cors from "cors";
 import { callNewAgent } from "./lib/new-agent.js";
 import { mongoClient } from "./lib/db.js";
 import { Binary } from "mongodb";
@@ -8,7 +8,7 @@ import { Binary } from "mongodb";
 const app: Express = express();
 app.use(express.json());
 
-// Allow CORS for localhost:3000
+// Allow CORS for ...
 app.use(
   cors({
     origin: ["http://localhost:3000", "https://blackberry-mountain.vercel.app"],
