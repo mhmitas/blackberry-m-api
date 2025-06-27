@@ -9,7 +9,7 @@ const model = new ChatGoogleGenerativeAI({
 });
 
 const embeddingModel = new GoogleGenerativeAIEmbeddings({
-  model: "models/embedding-001",
+  model: "models/text-embedding-004",
 });
 
 export { model, embeddingModel };
